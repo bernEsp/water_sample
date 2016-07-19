@@ -41,7 +41,7 @@ describe 'WaterSample' do
     end
 
     let(:with_factor_weights) do
-     hash_water_sample.merge( {'factor_5':  0.0213, 'factor_6': 0.432, 'factor_9':  0.0321} )
+      hash_water_sample.merge( { :factor_0=>0.024007, :factor_1=>0.02415, :factor_2=>0.021627, :factor_3=>0.02887 } )
     end
 
     it 'should respond to to_hash method' do
@@ -50,6 +50,22 @@ describe 'WaterSample' do
 
     it 'should return a hash of attributes' do
       expect(water_sample.to_hash).to eq(hash_water_sample)
+    end
+
+    context 'include factor weight' do
+
+      it 'should return a hash that includes factors linear composition value' do
+        expect(water_sample.to_hash(true)).to eq(with_factor_weights)
+      end
+
+    end
+ 
+  end
+
+  describe 'factor' do
+    subject(:water_sample) { WaterSample.find(2) }
+    it 'should return the the linear composition factor example' do
+      expect(water_sample.factor(2)).to eq(0.02415)
     end
   end
 end
