@@ -3,14 +3,20 @@ require './lib/factor_weight'
 
 class WaterSample 
 
+  # notice factor_weights attribute acts as has_many relationship
   attr_accessor :id, :site, :chloroform, :bromoform, :bromodichloromethane, :dibromichloromethane, :factor_weights
 
+  # This method find a record in water samples table and create a water_sample
+  # object.
+  
   def self.find(sample_id)
     sample_id = sample_id.to_i 
     result = mysql_client.query("SELECT * FROM water_samples WHERE id = #{sample_id}")
     map_result(result).first
   end
 
+  # Besides the old sinxtax of parameters this support a hash that contains the
+  # sql row
   def initialize(water_sample_values = {})
     @id   = water_sample_values.fetch(:id, nil)
     @site = water_sample_values.fetch(:site, nil)
@@ -21,6 +27,11 @@ class WaterSample
     @factor_weights = []
   end
 
+  # this protocol map instance attributes to a hash
+  # implements the inclusion of factors which is the linear combination of
+  # factor weights and sample attributes, maping as many factors as
+  # factor_weights size
+  #
   def to_hash(include_factors = false)
     result = {} 
     instance_variables.each do |name|
@@ -37,6 +48,8 @@ class WaterSample
     result
   end
 
+  # factor computes the linear combination of a factor_weight with water sample
+  # attributes
   def factor(factor_weight_id)
     factor_weight = factor_weight(factor_weight_id)
     calculate_factor(factor_weight)
@@ -51,16 +64,21 @@ class WaterSample
       Client::MysqlAdapter.new(database: 'factor_hw', symbolize_keys: true)
     end
 
-    def factor_weight(id)
-      factor_weight = WaterSample.mysql_client.query("SELECT * FROM factor_weights WHERE id = #{id}").first
-      map_factor_weight( factor_weight )
+    def factor_weight(id) 
+      load_factor_weights!
+      factor_weights.select{|factor_weight| factor_weight.id == id }.first
     end
 
     def factors
+      load_factor_weights!
+      factor_weights.map{|factor_weight| calculate_factor(factor_weight) }
+    end
+
+    def load_factor_weights!
+      return  unless factor_weights.empty?
       factor_weights_result = WaterSample.mysql_client.query("SELECT * FROM factor_weights")
       self.factor_weights = []
       factor_weights_result.each { |factor_weight| map_factor_weight(factor_weight) }
-      factor_weights.map{|factor_weight| calculate_factor(factor_weight) }
     end
 
     def calculate_factor(factor_weight)
@@ -77,5 +95,4 @@ class WaterSample
       factor_weights << factor_weight
       factor_weight
     end
-
 end
