@@ -3,6 +3,7 @@ GEM
   specs:
     diff-lcs (1.2.5)
     mysql2 (0.4.4)
+    rake (11.2.2)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -22,6 +23,7 @@ PLATFORMS
 
 DEPENDENCIES
   mysql2
+  rake
   rspec
 
 RUBY VERSION
