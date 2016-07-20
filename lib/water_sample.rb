@@ -41,7 +41,7 @@ class WaterSample
     if include_factors
       factors_hash = {}
       factors.each_with_index do |v,i| 
-        factors_hash["factor_#{i}".to_sym] = v
+        factors_hash["factor_#{i+1}".to_sym] = v
       end
       result.merge!(factors_hash)
     end
