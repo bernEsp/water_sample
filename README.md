@@ -9,7 +9,7 @@ This app exposes
 
 Class
 
-  *find # Interface to get an specific water sample object with the ID and
+  * find # Interface to get an specific water sample object with the ID and
   return the instance if exists
 
 Intance
