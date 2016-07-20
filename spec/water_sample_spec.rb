@@ -41,7 +41,7 @@ describe 'WaterSample' do
     end
 
     let(:with_factor_weights) do
-      hash_water_sample.merge( { :factor_0=>0.024007, :factor_1=>0.02415, :factor_2=>0.021627, :factor_3=>0.02887 } )
+      hash_water_sample.merge( { :factor_1=>0.024007, :factor_2=>0.02415, :factor_3=>0.021627, :factor_4=>0.02887 } )
     end
 
     it 'should respond to to_hash method' do

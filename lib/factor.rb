@@ -1,10 +1,8 @@
-require './lib/factor'
+require './lib/factor_weight'
 require './lib/water_sample'
 
-class FactorWeight < ActiveRecord::Base
+class Factor < ActiveRecord::Base
   establish_connection adapter: 'mysql2', host: 'localhost', username: 'root', password: '', database: 'factor_hw'
-
-  has_many :factors
-  has_many :water_samples, through: :factors
-
+  belongs_to :water_sample
+  belongs_to :factor_weight
 end
