@@ -24,7 +24,34 @@ Intance
 Contains a pure ruby app that connects to your database read data from it and
 map to water_sample and factor weight objects
 
+#### Run locally
+Requirements
+   * mysql
+   * ruby 2.3.1
+   * factor_hw database
+   * localhost, root and empty password for mysql
 
+  1. bundle install
+  2. bundle exec irb
+  3. bundle exec rspec
+  4. Run the appplication
+  ```ruby
+    require './lib/water_sample'
+    # Find water sample 
+    w = WaterSample.find(1)
+    w.factor(2)
+    w.to_hash
+    w.to_hash(true)
+
+    # get an unexiting water sample
+    w2 = WaterSample.find(40)
+    # all methods fail because you are not going to have water sample instance
+  ```
+  
+
+
+
+=======================================================================
 #### stable-with-activerecord Branch
 
 This branch contains the active record implementation
