@@ -1,8 +1,8 @@
 require './lib/client/mysql_adapter'
 require './lib/factor_weight'
+require './lib/water_sample_decorator'
 
 class WaterSample 
-
   # notice factor_weights attribute acts as has_many relationship
   attr_accessor :id, :site, :chloroform, :bromoform, :bromodichloromethane, :dibromichloromethane, :factor_weights
 
@@ -17,14 +17,14 @@ class WaterSample
 
   # Besides the old sinxtax of parameters this support a hash that contains the
   # sql row
-  def initialize(water_sample_values = {})
-    @id   = water_sample_values.fetch(:id, nil)
-    @site = water_sample_values.fetch(:site, nil)
-    @chloroform = water_sample_values.fetch(:chloroform, nil)
-    @bromoform = water_sample_values.fetch(:bromoform, nil)
-    @bromodichloromethane = water_sample_values.fetch(:bromodichloromethane, nil)
-    @dibromichloromethane = water_sample_values.fetch(:dibromichloromethane, nil)
-    @factor_weights = []
+  def initialize(id: nil,site: nil, chloroform: nil,bromoform: nil, bromodichloromethane: nil, dibromichloromethane: nil, factor_weights: [])
+    method(__method__).parameters.each do |type, name|
+      # this identify the type of parameter: key (keyarguments), req (parameter),
+      # opt( hash), rest ( *args )
+      next unless type == :key
+      value = eval(name.to_s)
+      instance_variable_set("@#{name}", value) unless name.nil?
+    end
   end
 
   # this protocol map instance attributes to a hash
@@ -33,19 +33,7 @@ class WaterSample
   # factor_weights size
   #
   def to_hash(include_factors = false)
-    result = {} 
-    instance_variables.each do |name|
-      name = name.to_s.gsub('@','')
-      result[name.to_sym] = self.send(name.to_sym)  unless name == 'factor_weights'
-    end
-    if include_factors
-      factors_hash = {}
-      factors.each_with_index do |v,i| 
-        factors_hash["factor_#{i+1}".to_sym] = v
-      end
-      result.merge!(factors_hash)
-    end
-    result
+    decorates_myself(include_factors)
   end
 
   # factor computes the linear combination of a factor_weight with water sample
@@ -75,7 +63,7 @@ class WaterSample
     end
 
     def load_factor_weights!
-      return  unless factor_weights.empty?
+      return unless factor_weights.empty?
       factor_weights_result = WaterSample.mysql_client.query("SELECT * FROM factor_weights")
       self.factor_weights = []
       factor_weights_result.each { |factor_weight| map_factor_weight(factor_weight) }
@@ -94,5 +82,9 @@ class WaterSample
       end
       factor_weights << factor_weight
       factor_weight
+    end
+
+    def decorates_myself(include_factors)
+      WaterSampleDecorator.new(water_sample: self, include_factors:include_factors).hashify
     end
 end
