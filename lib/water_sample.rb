@@ -39,8 +39,12 @@ class WaterSample
   # factor computes the linear combination of a factor_weight with water sample
   # attributes
   def factor(factor_weight_id)
-    factor_weight = factor_weight(factor_weight_id)
-    calculate_factor(factor_weight)
+    begin
+      factor_weight = factor_weight(factor_weight_id)
+      calculate_factor(factor_weight)
+    rescue
+      InvalidFactor.new
+    end
   end
 
   private
