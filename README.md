@@ -31,6 +31,20 @@ Requirements
    * factor_hw database
    * localhost, root and empty password for mysql
 
+
+  ##### loading data into mysql
+    1. create database `factor_hw`
+    ```mysql
+      -># mysql -u user 
+          create database factor_hw
+    ```
+    2. load data into the database
+    ```mysql
+      -># mysql -u user factor_hw < wiki/water_sample_schema.sql
+    ```
+
+  ##### app instructions
+
   1. bundle install
   2. bundle exec irb
   3. bundle exec rspec

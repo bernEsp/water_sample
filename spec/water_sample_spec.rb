@@ -67,5 +67,11 @@ describe 'WaterSample' do
     it 'should return the the linear composition factor example' do
       expect(water_sample.factor(2)).to eq(0.02415)
     end
+
+    context 'invalid factor' do
+      it 'return invalid factor instance' do
+        expect(water_sample.factor(24) ).to be_an_instance_of(InvalidFactor)
+      end
+    end
   end
 end

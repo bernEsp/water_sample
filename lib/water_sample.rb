@@ -1,6 +1,7 @@
 require './lib/client/mysql_adapter'
 require './lib/factor_weight'
 require './lib/water_sample_decorator'
+require './lib/invalid_factor'
 
 class WaterSample 
   # notice factor_weights attribute acts as has_many relationship
